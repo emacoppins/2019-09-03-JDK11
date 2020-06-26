@@ -1,6 +1,6 @@
 package it.polito.tdp.food.model;
 
-public class Portion {
+public class Portion implements Comparable <Portion>{
 	private Integer portion_id;
 	private Double portion_amount;
 	private String portion_display_name;
@@ -83,8 +83,13 @@ public class Portion {
 
 	@Override
 	public String toString() {
-		return "{portion_id=" + portion_id + ", portion_amount=" + portion_amount + ", portion_display_name="
-				+ portion_display_name + ", food_code=" + food_code + "}";
+		return portion_display_name;
+	}
+
+	@Override
+	public int compareTo(Portion other) {
+		
+		return this.portion_display_name.compareTo(other.portion_display_name);
 	}
 
 	

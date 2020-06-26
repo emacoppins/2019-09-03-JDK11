@@ -7,6 +7,7 @@ package it.polito.tdp.food;
 import java.net.URL;
 import java.util.ResourceBundle;
 import it.polito.tdp.food.model.Model;
+import it.polito.tdp.food.model.Portion;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -40,7 +41,7 @@ public class FoodController {
     private Button btnCammino; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxPorzioni"
-    private ComboBox<?> boxPorzioni; // Value injected by FXMLLoader
+    private ComboBox <Portion> boxPorzioni; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -48,7 +49,15 @@ public class FoodController {
     @FXML
     void doCammino(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Cerco cammino peso massimo...");
+    	try {
+    		model.trovaCammino(this.boxPorzioni.getValue(),Integer.parseInt(this.txtPassi.getText()));
+    		this.txtResult.appendText(String.format("il cammino ha peso %d\n", model.getPeso()));
+    		this.txtResult.appendText(model.getBest().toString());
+    		
+    	}catch(NumberFormatException e) {
+    		txtResult.appendText("Inserisci numero");
+    		return;
+    	}
     }
 
     @FXML
@@ -61,7 +70,17 @@ public class FoodController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Creazione grafo...");
+    	String s=this.txtCalorie.getText();
+    	try {
+    	Integer n=Integer.parseInt(s);
+    		model.creaGrafo(n);
+    		this.txtResult.appendText(String.format("Grafo con %d vertici e %d archi\n", model.nvertici(), model.narchi()));
+    	}catch (NumberFormatException e) {
+    		this.txtResult.appendText("Inserisci un numero intero ");
+    	} catch(NullPointerException npe) {
+    		this.txtResult.appendText("Non esiste nessun grafo per le calorie selezionate ");
+    	}
+    	
     	
     }
 
@@ -79,5 +98,7 @@ public class FoodController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	this.boxPorzioni.getItems().addAll(this.model.typePortions());
+    	
     }
 }
